@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Sistem Auto Ploting Jadwal - Sarunis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8fafc;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            color: #1e293b;
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        p {
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        .instruction-box {
+            background-color: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .instruction-box strong {
+            color: #1e3a8a;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .card {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="no-print instruction-box">
+            <strong>🖨️ Petunjuk Menyimpan sebagai PDF Tanpa Header/Footer Browser:</strong>
+            1. Buka file HTML ini di browser Anda (Google Chrome / Microsoft Edge).<br>
+            2. Tekan tombol <strong>Ctrl + P</strong> (Windows) atau <strong>Cmd + P</strong> (Mac).<br>
+            3. Pada opsi tujuan cetak (Destination), pilih <strong>"Save as PDF"</strong> / <strong>"Simpan sebagai
+                PDF"</strong>.<br>
+            4. Klik menu <strong>"More settings" / "Setelan selengkapnya"</strong>, lalu <strong>hilangkan
+                centang</strong> pada pilihan <strong>"Headers and footers" / "Header dan footer"</strong>.<br>
+            5. Klik <strong>Save / Simpan</strong>. File path dan nomor halaman browser tidak akan muncul di PDF.
+        </div>
+
+        <h1>Dokumentasi Sistem Auto Ploting Jadwal Pelajaran</h1>
+        <p>Sistem ini dirancang untuk melakukan manajemen, validasi, plotting otomatis (Schedule Generator), analisis
+            konflik, dan distribusi jadwal pelajaran secara efisien pada aplikasi <strong>Sarunis</strong>.</p>
+
+        <h2>1. Flowchart Proses Auto Ploting (Algoritma Generator)</h2>
+        <p>Alur kerja di bawah ini menunjukkan proses ketika Administrator menjalankan generator plotting jadwal
+            otomatis untuk menetapkan jam mengajar guru:</p>
+
+        <div class="mermaid">
+            graph TD
+            A([Mulai Proses Plotting]) --> B[Ambil Input: Tahun Akademik & Kelas Target]
+            B --> C{Apakah 'Bersihkan Jadwal Lama' Aktif?}
+            C -- Ya --> D[Hapus Jadwal Lama pada Tahun Akademik Tersebut]
+            C -- Tidak --> E[Ambil Daftar Kelas yang Akan Dijadwalkan]
+            D --> E
+            E --> F[Ambil Seluruh Mata Pelajaran untuk Setiap Kelas]
+            F --> G[Inisialisasi Slot Waktu Sekolah <br /> 07:00 - 15:00 per Hari Operasional]
+
+            G --> H[Loop Setiap Kelas & Mata Pelajaran]
+            H --> I[Cari Guru yang Memiliki Kualifikasi Mengajar Mapel]
+            I --> J{Apakah Guru Tersedia?}
+
+            J -- Tidak --> K[Tandai Slot sebagai Gagal]
+            J -- Ya --> L[Loop Slot Waktu yang Kosong]
+
+            L --> M{Apakah Guru Sibuk di Jam Tersebut? <br /> Cek Konflik Overlap}
+            M -- Ya --> L
+            M -- Tidak --> N[Buat Jadwal Mengajar <br /> Simpan ke Database]
+            N --> O[Tandai Slot Waktu Tersebut sebagai Dipakai]
+
+            O --> P{Apakah Semua Mapel Selesai?}
+            P -- Tidak --> H
+            P -- Ya --> Q[Simpan Log Histori Hasil Plotting ke 'schedule_generations']
+            Q --> R([Selesai & Tampilkan Hasil di UI])
+        </div>
+
+        <h2>2. Use Case Diagram Sistem Jadwal Pelajaran</h2>
+        <p>Interaksi peran masing-masing pengguna (Aktor) terhadap sistem jadwal pelajaran:</p>
+
+        <div class="mermaid">
+            graph LR
+            Admin["🧑‍💼 Administrator"]
+            Guru["🧑‍🏫 Guru Mapel"]
+            Siswa["🧑‍🎓 Siswa"]
+
+            subgraph Sistem["Sistem Jadwal Pelajaran (Sarunis)"]
+            UC1["Validasi Kesiapan Data Jadwal"]
+            UC2["Generate Plotting Jadwal Otomatis"]
+            UC3["Audit & Analisis Konflik Jadwal"]
+            UC4["Ekspor Jadwal (HTML, CSV, ICS Calendar)"]
+            UC5["Lihat Jadwal Mengajar Mingguan"]
+            UC6["Lihat Jadwal Pelajaran Kelas"]
+            end
+
+            Admin --> UC1
+            Admin --> UC2
+            Admin --> UC3
+            Admin --> UC4
+            Admin --> UC6
+
+            Guru --> UC5
+            Guru --> UC6
+
+            Siswa --> UC6
+        </div>
+
+        <h2>3. Fitur Utama Sistem</h2>
+        <ul>
+            <li><strong>Automatic Generator:</strong> Algoritma cerdas yang memetakan jam mengajar guru dengan kelas
+                secara instan.</li>
+            <li><strong>Conflict Avoidance:</strong> Mencegah bentrok jadwal guru di jam yang sama pada kelas berbeda
+                secara real-time.</li>
+            <li><strong>Beban Kerja Guru (Workload Analysis):</strong> Memantau agar total jam ajar guru per minggu
+                tidak melebihi batas 25 jam.</li>
+            <li><strong>Kalender ICS (iCal):</strong> Jadwal yang dihasilkan dapat langsung disinkronkan ke Google
+                Calendar masing-masing pengguna.</li>
+        </ul>
+    </div>
+
+    <!-- Load Mermaid.js to render diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+
+</html>

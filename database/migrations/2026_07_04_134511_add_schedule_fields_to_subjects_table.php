@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->unsignedTinyInteger('day_of_week')->nullable()->after('lesson_hours');
+            $table->time('start_time')->nullable()->after('day_of_week');
+            $table->time('end_time')->nullable()->after('start_time');
+            $table->foreignId('school_class_id')->nullable()->after('end_time')->constrained('school_classes')->nullOnDelete();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->dropForeign(['school_class_id']);
+            $table->dropColumn(['day_of_week', 'start_time', 'end_time', 'school_class_id']);
+        });
+    }
+};
