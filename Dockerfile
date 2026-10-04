@@ -7,7 +7,8 @@ COPY . .
 RUN npm run build
 
 # Stage 2: PHP Application Container
-FROM php:8.3-fpm-alpine
+FROM php:8.3-cli-alpine
+
 
 # Install system dependencies & PHP extensions
 RUN sed -i 's#https://dl-cdn.alpinelinux.org/alpine#https://dl-4.alpinelinux.org/alpine#g' /etc/apk/repositories
@@ -62,5 +63,6 @@ ENV PHP_CLI_SERVER_WORKERS=4
 EXPOSE 8000
 
 ENTRYPOINT ["/var/www/docker/entrypoint.sh"]
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
+CMD ["sh", "-c", "exec php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
+
 
