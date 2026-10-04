@@ -8,10 +8,12 @@ php artisan storage:link --force || true
 php artisan config:clear || true
 php artisan cache:clear || true
 
-# Run database migrations & seeder in background so web server starts instantly
-(php artisan migrate --force && php artisan db:seed --class=InitialAdminSeeder --force) &
+# Run database migrations & seeder
+php artisan migrate --force || true
+php artisan db:seed --class=InitialAdminSeeder --force || true
 
 # Execute main web server command immediately
 exec "$@"
+
 
 
